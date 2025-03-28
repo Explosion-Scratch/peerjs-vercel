@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/peerjs.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/peerjs/(.*)",
+      "dest": "api/peerjs.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/peerjs.js"
+    }
+  ]
+}
