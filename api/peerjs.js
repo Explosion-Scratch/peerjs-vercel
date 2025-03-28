@@ -1,40 +1,69 @@
-import { ExpressPeerServer } from 'peer';
-import express from 'express';
+import { ExpressPeerServer } from "peer";
+import express from "express";
+import cors from "cors";
 
-// Create Express app
 const app = express();
 
-// Configuration
-const PORT = process.env.PORT || 3000;
-const PATH = '/peerjs';
+app.use(
+  cors({
+    origin: "https://explosion-scratch.github.io",
+  }),
+);
 
-// Set up the PeerJS server as middleware
+const PORT = process.env.PORT || 9000;
+const PATH = "/";
+
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}${PATH}`);
 });
+
+function generateClientId() {
+  const randomWords = [
+    "alpha",
+    "bravo",
+    "charlie",
+    "delta",
+    "echo",
+    "foxtrot",
+    "golf",
+    "hotel",
+    "india",
+    "juliett",
+    "kilo",
+    "lima",
+    "mike",
+    "november",
+    "oscar",
+    "papa",
+    "quebec",
+    "romeo",
+    "sierra",
+    "tango",
+    "uniform",
+    "victor",
+    "whiskey",
+    "x-ray",
+    "yankee",
+    "zulu",
+  ];
+  return `${randomWords[Math.floor(Math.random() * randomWords.length)]}-${randomWords[Math.floor(Math.random() * randomWords.length)]}-${Math.floor(Math.random() * 1000)}`;
+}
 
 const peerServer = ExpressPeerServer(server, {
   path: PATH,
+  generateClientId,
   allow_discovery: true,
-  proxied: true, // Important for Vercel
+  proxied: true,
 });
 
-// Use PeerJS as middleware
 app.use(PATH, peerServer);
 
-// Event handlers
-peerServer.on('connection', (client) => {
+peerServer.on("connection", (client) => {
   console.log(`Client connected: ${client.id}`);
 });
 
-peerServer.on('disconnect', (client) => {
+peerServer.on("disconnect", (client) => {
   console.log(`Client disconnected: ${client.id}`);
 });
 
-// Basic route for health check
-app.get('/', (req, res) => {
-  res.send('PeerJS server is running');
-});
-
-// Export for Vercel serverless function
 export default app;
