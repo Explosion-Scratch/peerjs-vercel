@@ -4,11 +4,7 @@ import cors from "cors";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://explosion-scratch.github.io",
-  }),
-);
+app.use(cors());
 
 const PORT = process.env.PORT || 9000;
 const PATH = "/";
